@@ -12,3 +12,15 @@ func Captcha(input string) (output int) {
 	}
 	return
 }
+
+// CaptchaHalfway compares characters halway around the string
+func CaptchaHalfway(input string) (output int) {
+	for i := 0; i < len(input); i++ {
+		c := input[i]
+		p := input[(i+len(input)/2)%len(input)]
+		if p == c {
+			output = output + int(p) - 48
+		}
+	}
+	return
+}
