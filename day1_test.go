@@ -2,37 +2,25 @@ package main
 
 import "testing"
 
-func TestCaptcha(t *testing.T) {
+func TestInverseCaptcha(t *testing.T) {
 	for _, tt := range []struct {
-		in  string
-		out int
+		in   string
+		mode int
+		out  int
 	}{
-		{"1122", 3},
-		{"1111", 4},
-		{"1234", 0},
-		{"91212129", 9},
+		{"1122", 0, 3},
+		{"1111", 0, 4},
+		{"1234", 0, 0},
+		{"91212129", 0, 9},
+		{"1212", 1, 6},
+		{"1221", 1, 0},
+		{"123425", 1, 4},
+		{"123123", 1, 12},
+		{"12131415", 1, 4},
 	} {
-		r := Captcha(tt.in)
+		r := InverseCaptcha(tt.in, tt.mode)
 		if r != tt.out {
-			t.Errorf("Captcha(%s) => %d, want %d", tt.in, r, tt.out)
-		}
-	}
-}
-
-func TestCaptchaHalfway(t *testing.T) {
-	for _, tt := range []struct {
-		in  string
-		out int
-	}{
-		{"1212", 6},
-		{"1221", 0},
-		{"123425", 4},
-		{"123123", 12},
-		{"12131415", 4},
-	} {
-		r := CaptchaHalfway(tt.in)
-		if r != tt.out {
-			t.Errorf("Captcha2(%s) => %d, want %d", tt.in, r, tt.out)
+			t.Errorf("InverseCaptcha(%s, %d) => %d, want %d", tt.in, tt.mode, r, tt.out)
 		}
 	}
 }

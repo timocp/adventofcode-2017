@@ -1,25 +1,18 @@
 package main
 
-// Captcha based on each digit which matches the next in the string
-func Captcha(input string) (output int) {
-	p := input[len(input)-1]
-	for i := 0; i < len(input); i++ {
-		c := input[i]
-		if p == c {
-			output = output + int(p) - 48
-		}
-		p = c
+// InverseCaptcha calcualtes the day1 capcha from an input string
+// mode = 0 - each char is compared to the following char
+// mode = 1 - each char is compared to one halfway around the input
+func InverseCaptcha(input string, mode int) (output int) {
+	offset := 1
+	if mode == 1 {
+		offset = len(input) / 2
 	}
-	return
-}
-
-// CaptchaHalfway compares characters halway around the string
-func CaptchaHalfway(input string) (output int) {
 	for i := 0; i < len(input); i++ {
 		c := input[i]
-		p := input[(i+len(input)/2)%len(input)]
+		p := input[(i+offset)%len(input)]
 		if p == c {
-			output = output + int(p) - 48
+			output += int(p) - 48
 		}
 	}
 	return
