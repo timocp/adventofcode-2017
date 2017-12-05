@@ -20,7 +20,7 @@ func main() {
 	case "3a":
 		fmt.Println(SpiralMemoryDistance(toInt(os.Args[2])))
 	default:
-		fmt.Printf("Puzzle %s unimplemented", os.Args[1])
+		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
 }
 

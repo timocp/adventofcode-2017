@@ -1,8 +1,14 @@
 #! /bin/sh
 
-go build || exit
-./adventofcode 1a $(cat input/day1.txt)
-./adventofcode 1b $(cat input/day1.txt)
-./adventofcode 2a input/day2.txt
-./adventofcode 2b input/day2.txt
-./adventofcode 3a $(cat input/day3.txt)
+go test && go build || exit 1
+for d in $(jot 3); do
+    if [ -f input/day$d.in ]; then
+        input=$(cat input/day$d.in)
+    else
+        input=input/day$d.txt
+    fi
+    echo -n "Day $d first puzzle  => "
+    ./adventofcode ${d}a $input
+    echo -n "Day $d second puzzle => "
+    ./adventofcode ${d}b $input
+done
