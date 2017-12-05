@@ -13,28 +13,24 @@ func main() {
 	case "1b":
 		fmt.Println(InverseCaptcha(os.Args[2], 1))
 	case "2a":
-		f, err := os.Open(os.Args[2])
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-		ss, err := ReadSpreadsheet(f)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(CorruptionChecksum(ss))
+		fmt.Println(CorruptionChecksum(loadSS(os.Args[2])))
 	case "2b":
-		f, err := os.Open(os.Args[2])
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-		ss, err := ReadSpreadsheet(f)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(EvenlyDivisibleChecksum(ss))
+		fmt.Println(EvenlyDivisibleChecksum(loadSS(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented", os.Args[1])
 	}
+}
+
+// loadSS reads a 2d int array from a filename, calling log.Fatal on error
+func loadSS(fn string) [][]int {
+	f, err := os.Open(fn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	ss, err := ReadSpreadsheet(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return ss
 }
