@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -16,6 +17,8 @@ func main() {
 		fmt.Println(CorruptionChecksum(loadSS(os.Args[2])))
 	case "2b":
 		fmt.Println(EvenlyDivisibleChecksum(loadSS(os.Args[2])))
+	case "3a":
+		fmt.Println(SpiralMemoryDistance(toInt(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented", os.Args[1])
 	}
@@ -33,4 +36,12 @@ func loadSS(fn string) [][]int {
 		log.Fatal(err)
 	}
 	return ss
+}
+
+func toInt(arg string) int {
+	i, err := strconv.Atoi(arg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return i
 }
