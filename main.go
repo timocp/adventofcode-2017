@@ -23,6 +23,17 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Println(CorruptionChecksum(ss))
+	case "2b":
+		f, err := os.Open(os.Args[2])
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		ss, err := ReadSpreadsheet(f)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(EvenlyDivisibleChecksum(ss))
 	default:
 		fmt.Printf("Puzzle %s unimplemented", os.Args[1])
 	}

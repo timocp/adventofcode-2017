@@ -24,6 +24,21 @@ func CorruptionChecksum(input [][]int) (output int) {
 	return
 }
 
+// EvenlyDivisibleChecksum is based on the 2 cells which evenly divide
+func EvenlyDivisibleChecksum(input [][]int) (output int) {
+	for _, row := range input {
+		for i := range row {
+			for j := 0; j < len(row); j++ {
+				if row[j] < row[i] && row[i]%row[j] == 0 {
+					output += row[i] / row[j]
+					break
+				}
+			}
+		}
+	}
+	return
+}
+
 // ReadSpreadsheet takes an io.Reader input (eg string or file) and retuns
 // a 2d array of integers
 func ReadSpreadsheet(input io.Reader) ([][]int, error) {

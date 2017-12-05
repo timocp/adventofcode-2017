@@ -11,9 +11,23 @@ func TestCorruptionChecksum(t *testing.T) {
 		{7, 5, 3},
 		{2, 4, 6, 8},
 	}
+	exp := 18
 	r := CorruptionChecksum(tt)
-	if r != 18 {
-		t.Errorf("CorruptionChecksum(%v) => %d, want %d", tt, r, 18)
+	if r != exp {
+		t.Errorf("CorruptionChecksum(%v) => %d, want %d", tt, r, exp)
+	}
+}
+
+func TestEvenlyDisivibleChecksum(t *testing.T) {
+	tt := [][]int{
+		{5, 9, 2, 8},
+		{9, 4, 7, 3},
+		{3, 8, 6, 5},
+	}
+	exp := 9
+	r := EvenlyDivisibleChecksum(tt)
+	if r != exp {
+		t.Errorf("EvenlyDivisibleChecksum(%v) => %d, want %d", tt, r, exp)
 	}
 }
 
