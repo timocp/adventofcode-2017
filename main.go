@@ -21,9 +21,19 @@ func main() {
 		fmt.Println(SpiralMemoryDistance(toInt(os.Args[2])))
 	case "3b":
 		fmt.Println(SpiralMemoryStressTest(toInt(os.Args[2])))
+	case "4a":
+		fmt.Println(MustCountValidPassphrases(mustOpen(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
+}
+
+func mustOpen(fn string) *os.File {
+	f, err := os.Open(fn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return f
 }
 
 // loadSS reads a 2d int array from a filename, calling log.Fatal on error
