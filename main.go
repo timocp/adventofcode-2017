@@ -19,6 +19,8 @@ func main() {
 		fmt.Println(EvenlyDivisibleChecksum(loadSS(os.Args[2])))
 	case "3a":
 		fmt.Println(SpiralMemoryDistance(toInt(os.Args[2])))
+	case "3b":
+		fmt.Println(SpiralMemoryStressTest(toInt(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}

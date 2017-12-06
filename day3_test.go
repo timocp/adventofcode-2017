@@ -18,3 +18,20 @@ func TestSpiralMemoryDistance(t *testing.T) {
 		}
 	}
 }
+
+func TestSpiralMemoryStressTest(t *testing.T) {
+	for _, tt := range []struct {
+		in  int
+		out int
+	}{
+		{1, 2},
+		{25, 26},
+		{100, 122},
+		{800, 806},
+	} {
+		r := SpiralMemoryStressTest(tt.in)
+		if r != tt.out {
+			t.Errorf("SpiralMemoryStressTest(%d) => %d, want %d", tt.in, r, tt.out)
+		}
+	}
+}
