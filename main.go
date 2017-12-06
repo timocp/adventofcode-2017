@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -22,11 +23,15 @@ func main() {
 	case "3b":
 		fmt.Println(SpiralMemoryStressTest(toInt(os.Args[2])))
 	case "4a":
-		fmt.Println(MustCountValidPassphrases(mustOpen(os.Args[2])))
+		fmt.Println(mustCountValidPassphrases(mustOpen(os.Args[2]), false))
+	case "4b":
+		fmt.Println(mustCountValidPassphrases(mustOpen(os.Args[2]), true))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
 }
+
+// helper functions mostly to log and exit on errors
 
 func mustOpen(fn string) *os.File {
 	f, err := os.Open(fn)
@@ -34,6 +39,14 @@ func mustOpen(fn string) *os.File {
 		log.Fatal(err)
 	}
 	return f
+}
+
+func mustCountValidPassphrases(input io.Reader, secure bool) int {
+	count, err := CountValidPasshrases(input, secure)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return count
 }
 
 // loadSS reads a 2d int array from a filename, calling log.Fatal on error
