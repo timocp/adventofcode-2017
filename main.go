@@ -27,7 +27,9 @@ func main() {
 	case "4b":
 		fmt.Println(mustCountValidPassphrases(mustOpen(os.Args[2]), true))
 	case "5a":
-		fmt.Println(mustReadTrampoline(os.Args[2]).StepsToExit())
+		fmt.Println(mustReadTrampoline(os.Args[2]).StepsToExit(false))
+	case "5b":
+		fmt.Println(mustReadTrampoline(os.Args[2]).StepsToExit(true))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}

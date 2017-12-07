@@ -38,11 +38,47 @@ func TestJump(t *testing.T) {
 	}
 }
 
+func TestStrangeJump(t *testing.T) {
+	tramp := sample()
+	for i, exp := range []string{
+		"(1) 3  0  1  -3 ",
+		" 2 (3) 0  1  -3 ",
+		" 2  2  0  1 (-3)",
+		" 2 (2) 0  1  -2 ",
+		" 2  3  0 (1) -2 ",
+		" 2  3  0  2 (-2)",
+		" 2  3 (0) 2  -1 ",
+		" 2  3 (1) 2  -1 ",
+		" 2  3  2 (2) -1 ",
+		" 2  3  2  3  -1 ",
+	} {
+		if tramp.Escaped() {
+			t.Errorf("%dth tramp.Escaped() => true, want false", i+1)
+		}
+		tramp.StrangeJump()
+		if tramp.String() != exp {
+			t.Errorf("%dth tramp.StrangeJump() => %s, want %s", i+1, tramp.String(), exp)
+			break
+		}
+	}
+	// last jump should escape
+	if !tramp.Escaped() {
+		t.Errorf("Final tramp.Escaped() => false, want true")
+	}
+}
+
 func TestStepsToExit(t *testing.T) {
-	exp := 5
-	count := sample().StepsToExit()
-	if count != exp {
-		t.Errorf("StepsToExit(%v) => %d, want %d", sample(), count, exp)
+	for _, tt := range []struct {
+		strange bool
+		out     int
+	}{
+		{false, 5},
+		{true, 10},
+	} {
+		r := sample().StepsToExit(tt.strange)
+		if r != tt.out {
+			t.Errorf("%v.StepsToExit(%t) => %d, want %d", sample(), tt.strange, r, tt.out)
+		}
 	}
 }
 

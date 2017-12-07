@@ -41,6 +41,18 @@ func (tramp *Trampoline) Jump() {
 	tramp.ptr += tramp.list[tramp.ptr] - 1
 }
 
+// StrangeJump is the same but if the current instruction is >=3 it is
+// decremented instead of incremented
+func (tramp *Trampoline) StrangeJump() {
+	offset := tramp.list[tramp.ptr]
+	if offset >= 3 {
+		tramp.list[tramp.ptr]--
+	} else {
+		tramp.list[tramp.ptr]++
+	}
+	tramp.ptr += offset
+}
+
 // Escaped returns true if the current pointer is outside the instruction set
 func (tramp *Trampoline) Escaped() bool {
 	if tramp.ptr < 0 || tramp.ptr >= len(tramp.list) {
@@ -50,11 +62,15 @@ func (tramp *Trampoline) Escaped() bool {
 }
 
 // StepsToExit counts the number of jumps required before the program exits
-func (tramp *Trampoline) StepsToExit() int {
+func (tramp *Trampoline) StepsToExit(strange bool) int {
 	count := 0
 	for !tramp.Escaped() {
 		count++
-		tramp.Jump()
+		if strange {
+			tramp.StrangeJump()
+		} else {
+			tramp.Jump()
+		}
 	}
 	return count
 }
