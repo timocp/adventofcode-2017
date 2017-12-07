@@ -26,6 +26,8 @@ func main() {
 		fmt.Println(mustCountValidPassphrases(mustOpen(os.Args[2]), false))
 	case "4b":
 		fmt.Println(mustCountValidPassphrases(mustOpen(os.Args[2]), true))
+	case "5a":
+		fmt.Println(mustReadTrampoline(os.Args[2]).StepsToExit())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
@@ -39,6 +41,14 @@ func mustOpen(fn string) *os.File {
 		log.Fatal(err)
 	}
 	return f
+}
+
+func mustReadTrampoline(fn string) *Trampoline {
+	tramp, err := NewReadTrampoline(mustOpen(fn))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tramp
 }
 
 func mustCountValidPassphrases(input io.Reader, secure bool) int {
