@@ -30,6 +30,8 @@ func main() {
 		fmt.Println(mustReadTrampoline(os.Args[2]).StepsToExit(false))
 	case "5b":
 		fmt.Println(mustReadTrampoline(os.Args[2]).StepsToExit(true))
+	case "6a":
+		fmt.Println(mustReadMemoryBank(os.Args[2]).RedistributeUntilRepeat())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
@@ -51,6 +53,14 @@ func mustReadTrampoline(fn string) *Trampoline {
 		log.Fatal(err)
 	}
 	return tramp
+}
+
+func mustReadMemoryBank(fn string) *MemoryBank {
+	mem, err := NewMemoryBankRead(mustOpen(fn))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return mem
 }
 
 func mustCountValidPassphrases(input io.Reader, secure bool) int {
