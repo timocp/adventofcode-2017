@@ -21,18 +21,22 @@ func TestRedistribute(t *testing.T) {
 	}
 }
 
-func TestRedistributeUntilRepear(t *testing.T) {
+func TestRedistributeUntilRepeat(t *testing.T) {
 	for _, tt := range []struct {
-		in    []int
-		state string
-		out   int
+		in     []int
+		state  string
+		cycle  int
+		repeat int
 	}{
-		{[]int{0, 2, 7, 0}, "[2 4 1 2]", 5},
+		{[]int{0, 2, 7, 0}, "[2 4 1 2]", 5, 4},
 	} {
 		m := NewMemoryBank(tt.in)
 		r := m.RedistributeUntilRepeat()
-		if r != tt.out {
-			t.Errorf("RedistributeUntilRepeat() => %d, want %d", r, tt.out)
+		if r.Cycle != tt.cycle {
+			t.Errorf("RedistributeUntilRepeat().Cycle => %d, want %d", r.Cycle, tt.cycle)
+		}
+		if r.Repeat != tt.repeat {
+			t.Errorf("RedistributeUntilRepeat().Repeat => %d, want %d", r.Repeat, tt.repeat)
 		}
 		if m.String() != tt.state {
 			t.Errorf("Final state => %v, want %s", m, tt.state)

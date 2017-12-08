@@ -72,19 +72,25 @@ func (m *MemoryBank) Redistribute() {
 	}
 }
 
+// RedistributionStats contains counters after a series of redistributions
+type RedistributionStats struct {
+	Cycle  int
+	Repeat int
+}
+
 // RedistributeUntilRepeat calls redistribute until the configuration has been
-// seen before.  It returns the number of steps that were taken to do so.
-func (m *MemoryBank) RedistributeUntilRepeat() int {
-	// keep a hash of the string representations we've seen
-	seen := make(map[string]bool)
-	count := 0
-	for {
+// seen before.  It returns the number of steps that were taken to do so (Cycle)
+// and how many steps was the previously identical state (Repeat)
+func (m *MemoryBank) RedistributeUntilRepeat() RedistributionStats {
+	// keep a hash of the string representations we've seen, with the iteration
+	// it was first seen
+	seen := make(map[string]int)
+	for count := 1; ; count++ {
 		m.Redistribute()
-		count++
 		state := m.String()
-		if seen[state] {
-			return count
+		if lastSeen, wasSeen := seen[state]; wasSeen {
+			return RedistributionStats{count, count - lastSeen}
 		}
-		seen[state] = true
+		seen[state] = count
 	}
 }

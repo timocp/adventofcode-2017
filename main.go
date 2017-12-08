@@ -31,7 +31,9 @@ func main() {
 	case "5b":
 		fmt.Println(mustReadTrampoline(os.Args[2]).StepsToExit(true))
 	case "6a":
-		fmt.Println(mustReadMemoryBank(os.Args[2]).RedistributeUntilRepeat())
+		fmt.Println(mustReadMemoryBank(os.Args[2]).RedistributeUntilRepeat().Cycle)
+	case "6b":
+		fmt.Println(mustReadMemoryBank(os.Args[2]).RedistributeUntilRepeat().Repeat)
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
