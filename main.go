@@ -34,6 +34,8 @@ func main() {
 		fmt.Println(mustReadMemoryBank(os.Args[2]).RedistributeUntilRepeat().Cycle)
 	case "6b":
 		fmt.Println(mustReadMemoryBank(os.Args[2]).RedistributeUntilRepeat().Repeat)
+	case "7a":
+		fmt.Println(mustReadTower(os.Args[2]).FindBottomNode().Name)
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
@@ -63,6 +65,14 @@ func mustReadMemoryBank(fn string) *MemoryBank {
 		log.Fatal(err)
 	}
 	return mem
+}
+
+func mustReadTower(fn string) Tower {
+	tower, err := ReadTower(mustOpen(fn))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tower
 }
 
 func mustCountValidPassphrases(input io.Reader, secure bool) int {
