@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/timocp/adventofcode/day8"
 )
 
 func main() {
@@ -38,6 +40,10 @@ func main() {
 		fmt.Println(mustReadTower(os.Args[2]).Name)
 	case "7b":
 		fmt.Println(mustReadTower(os.Args[2]).WrongWeightShouldBe())
+	case "8a":
+		reg := day8.NewRegisters()
+		mustReadProgram(os.Args[2]).Execute(&reg)
+		fmt.Println(reg.LargestValue())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
@@ -83,6 +89,14 @@ func mustCountValidPassphrases(input io.Reader, secure bool) int {
 		log.Fatal(err)
 	}
 	return count
+}
+
+func mustReadProgram(fn string) day8.Program {
+	p, err := day8.ReadProgram(mustOpen(fn))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return p
 }
 
 // loadSS reads a 2d int array from a filename, calling log.Fatal on error

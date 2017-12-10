@@ -1,7 +1,7 @@
 #! /bin/sh
 
 go test && go build || exit 1
-for d in $(jot 7); do
+for d in $(jot 8); do
     if [ -f input/day$d.in ]; then
         input=$(cat input/day$d.in)
     else
