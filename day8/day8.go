@@ -47,13 +47,20 @@ func NewRegisters() Registers {
 	return r
 }
 
-// Execute runs program p against registers r
-func (p Program) Execute(r *Registers) {
+// Execute runs program p against registers r.  Returns the largest value
+// which was ever in the registers.
+func (p Program) Execute(r *Registers) int {
+	maxValue := 0
 	for _, inst := range p {
 		if inst.test(r) {
 			inst.do(r)
+			tmp := r.LargestValue()
+			if tmp > maxValue {
+				maxValue = tmp
+			}
 		}
 	}
+	return maxValue
 }
 
 func (inst *instruction) test(r *Registers) bool {

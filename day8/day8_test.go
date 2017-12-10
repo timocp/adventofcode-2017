@@ -33,9 +33,12 @@ func TestReadProgram(t *testing.T) {
 func TestExecute(t *testing.T) {
 	p, _ := ReadProgram(bytes.NewBufferString(sampleProgram))
 	r := Registers{}
-	p.Execute(&r)
+	max := p.Execute(&r)
 	if len(r) != 2 {
 		t.Errorf("%d registers after execution, want %d", len(r), 2)
+	}
+	if max != 10 {
+		t.Errorf("Maximum value => %d, want %d", max, 10)
 	}
 	for _, tt := range []struct {
 		name  string

@@ -42,8 +42,11 @@ func main() {
 		fmt.Println(mustReadTower(os.Args[2]).WrongWeightShouldBe())
 	case "8a":
 		reg := day8.NewRegisters()
-		mustReadProgram(os.Args[2]).Execute(&reg)
+		_ = mustReadProgram(os.Args[2]).Execute(&reg)
 		fmt.Println(reg.LargestValue())
+	case "8b":
+		reg := day8.NewRegisters()
+		fmt.Println(mustReadProgram(os.Args[2]).Execute(&reg))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
