@@ -65,25 +65,49 @@ func TestReadTower(t *testing.T) {
 	r, err := ReadTower(bytes.NewBufferString(strings.Join(sampleProgram, "\n")))
 	if err != nil {
 		t.Errorf("ReadTower() returned error %v, want nil", err)
-	} else if len(r) != len(sampleProgram) {
-		t.Errorf("ReadTower() length => %d, want %d", len(r), len(sampleProgram))
+	} else {
+		if r.Name != "tknk" {
+			t.Errorf("r.Name => %s, want %s", r.Name, "tknk")
+		}
 	}
 }
 
-func TestFindBottomNode(t *testing.T) {
+func TestIterate(t *testing.T) {
 	tower, _ := ReadTower(bytes.NewBufferString(strings.Join(sampleProgram, "\n")))
-	r := tower.FindBottomNode()
-	exp := "tknk"
-	if r == nil {
-		t.Errorf("FindBottomNode returned nil")
-	} else if r.Name != exp {
-		t.Errorf("FindBottomNode() => %s, want %s", r.Name, exp)
+	names := []string{}
+	tower.Iterate(func(n *Node, depth int) {
+		names = append(names, fmt.Sprintf("%d:%s", depth, n.Name))
+	})
+	exp := []string{
+		"0:tknk",
+		"1:ugml", "2:gyxo", "2:ebii", "2:jptl",
+		"1:padx", "2:pbga", "2:havc", "2:qoyq",
+		"1:fwft", "2:ktlj", "2:cntj", "2:xhth",
+	}
+	if !slicesEqual(names, exp) {
+		t.Errorf("Iterate Names => %q, want %q", names, exp)
+	}
+}
+
+func TestWeight(t *testing.T) {
+	tower, _ := ReadTower(bytes.NewBufferString(strings.Join(sampleProgram, "\n")))
+	r := tower.TotalWeight()
+	if r != 778 {
+		t.Errorf("TotalWeight() => %d, want %d", r, 778)
+	}
+}
+
+func TestWrongWeightShouldBe(t *testing.T) {
+	tower, _ := ReadTower(bytes.NewBufferString(strings.Join(sampleProgram, "\n")))
+	r := tower.WrongWeightShouldBe()
+	exp := 60
+	if r != exp {
+		t.Errorf("WrongWeightShouldBe() => %d, want %d", r, exp)
 	}
 }
 
 func slicesEqual(a []string, b []string) bool {
 	if len(a) != len(b) {
-		fmt.Printf("%d, %d\n", len(a), len(b))
 		return false
 	}
 	for i, v := range a {

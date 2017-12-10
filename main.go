@@ -35,7 +35,9 @@ func main() {
 	case "6b":
 		fmt.Println(mustReadMemoryBank(os.Args[2]).RedistributeUntilRepeat().Repeat)
 	case "7a":
-		fmt.Println(mustReadTower(os.Args[2]).FindBottomNode().Name)
+		fmt.Println(mustReadTower(os.Args[2]).Name)
+	case "7b":
+		fmt.Println(mustReadTower(os.Args[2]).WrongWeightShouldBe())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
@@ -67,7 +69,7 @@ func mustReadMemoryBank(fn string) *MemoryBank {
 	return mem
 }
 
-func mustReadTower(fn string) Tower {
+func mustReadTower(fn string) *Node {
 	tower, err := ReadTower(mustOpen(fn))
 	if err != nil {
 		log.Fatal(err)

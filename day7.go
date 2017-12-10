@@ -13,15 +13,15 @@ type Node struct {
 	Name      string
 	Weight    int
 	Balancing []string
-	HeldBy    string
+	Parent    *Node
+	Children  []*Node
 }
-
-// Tower is a set of nodes, keyed by their name
-type Tower map[string]*Node
 
 var nodeRe = regexp.MustCompile(`^(\w+) \((\d+)\)(?: -> )?(.*)$`)
 
-// ParseNode reads a node definition from a single line
+// ParseNode reads a node definition from a single line.  Balancing contains
+// a list of names of nodes it is balancing, these will be used to populate
+// Children[] and Parent
 func ParseNode(input string) (*Node, error) {
 	if !nodeRe.MatchString(input) {
 		return nil, fmt.Errorf("ParseNode: Invalid format: %s", input)
@@ -34,35 +34,100 @@ func ParseNode(input string) (*Node, error) {
 	}, nil
 }
 
-// ReadTower builds a Tower of nodes from input
-func ReadTower(input io.Reader) (Tower, error) {
+// ReadTower builds a set of nodes from input.  The top node is returned.
+func ReadTower(input io.Reader) (*Node, error) {
+	// a hash of nodes keyed by their names
 	tower := make(map[string]*Node)
 	s := bufio.NewScanner(input)
 	for s.Scan() {
 		n, err := ParseNode(s.Text())
 		if err != nil {
-			return tower, nil
+			return nil, err
 		}
 		tower[n.Name] = n
 	}
-	// record parents of each node ("" = none)
-	for name, node := range tower {
-		for _, child := range node.Balancing {
-			tower[child].HeldBy = name
+	if s.Err() != nil {
+		return nil, s.Err()
+	}
+	// build parent/child relationships
+	for _, node := range tower {
+		for _, childName := range node.Balancing {
+			node.Children = append(node.Children, tower[childName])
+			tower[childName].Parent = node
 		}
 	}
-	return tower, s.Err()
+	// find the node with no parent, it is the root
+	for _, node := range tower {
+		if node.Parent == nil {
+			return node, nil
+		}
+	}
+	return nil, fmt.Errorf("Tree has no root node")
 }
 
-// FindBottomNode returns the node at the bottom of the tower
-// The bottom node is the one which isn't being held up by any other
-func (tower Tower) FindBottomNode() *Node {
-	for _, node := range tower {
-		if node.HeldBy == "" {
-			return node
-		}
+// Iterate over a tree, calling f(node, depth) for each node
+func (node *Node) Iterate(f func(*Node, int)) {
+	_iterate(node, 0, f)
+}
+
+func _iterate(node *Node, depth int, f func(*Node, int)) {
+	f(node, depth)
+	for _, child := range node.Children {
+		_iterate(child, depth+1, f)
 	}
-	return nil
+}
+
+// TotalWeight returns the weight, including of all child nodes
+func (node *Node) TotalWeight() int {
+	weight := 0
+	node.Iterate(func(n *Node, depth int) {
+		weight += n.Weight
+	})
+	return weight
+}
+
+func (node *Node) String() string {
+	s := ""
+	node.Iterate(func(n *Node, depth int) {
+		for i := 0; i < depth; i++ {
+			s += " "
+		}
+		s += fmt.Sprintf("%s (%d)\n", n.Name, n.TotalWeight())
+	})
+	return s
+}
+
+// WrongWeightShouldBe returns the wight that the incorrectly balanced node
+// should have (given that exactly one program is the wrong weight)
+//
+// this means finding a node where its childrens weights are not all the same,
+// and returning what the wrong child's weight should be.
+func (node *Node) WrongWeightShouldBe() int {
+	correctWeight := 0
+	wrongDepth := -1
+	node.Iterate(func(n *Node, depth int) {
+		if len(n.Children) == 0 {
+			return
+		}
+		weights := make([]int, len(n.Children))
+		for i, child := range n.Children {
+			weights[i] = child.TotalWeight()
+		}
+		// work out the more common number
+		common := findCommon(weights)
+		// any child weights which don't match the expected value?
+		for i, child := range n.Children {
+			if weights[i] != common {
+				// this is the node that is wrong; we want the one at the
+				// maximum depth
+				if depth > wrongDepth {
+					correctWeight = child.Weight - (weights[i] - common)
+					wrongDepth = depth
+				}
+			}
+		}
+	})
+	return correctWeight
 }
 
 // split a string by commas and remove whitespace
@@ -75,4 +140,22 @@ func splitWords(s string) []string {
 		words[i] = strings.TrimSpace(words[i])
 	}
 	return words
+}
+
+// in a list with at most 2 different unique numbers, return the one which
+// occurs more than once
+func findCommon(numbers []int) int {
+	a := numbers[0]
+	for i := 1; i < len(numbers); i++ {
+		if numbers[i] != a {
+			if i == len(numbers)-1 {
+				return a
+			} else if numbers[i+1] == a {
+				return a
+			} else {
+				return numbers[i]
+			}
+		}
+	}
+	return a
 }
