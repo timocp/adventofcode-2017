@@ -62,7 +62,9 @@ func main() {
 	case "9b":
 		fmt.Println(day9.MustProcess(mustOpen(os.Args[2])).GarbageCount)
 	case "10a":
-		fmt.Println(day10.Hash(256, splitInts(os.Args[2])))
+		fmt.Println(day10.Knot(256, splitInts(os.Args[2])))
+	case "10b":
+		fmt.Println(day10.Hash(os.Args[2]))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}

@@ -28,10 +28,27 @@ func TestAct(t *testing.T) {
 	}
 }
 
-func TestHash(t *testing.T) {
-	r := Hash(5, []int{3, 4, 1, 5})
+func TestKnot(t *testing.T) {
+	r := Knot(5, []int{3, 4, 1, 5})
 	if r != 12 {
-		t.Errorf("Hash() => %d, want %d", r, 12)
+		t.Errorf("Knot() => %d, want %d", r, 12)
+	}
+}
+
+func TestHash(t *testing.T) {
+	for _, tt := range []struct {
+		in  string
+		out string
+	}{
+		{"", "a2582a3a0e66e6e86e3812dcb672a272"},
+		{"AoC 2017", "33efeb34ea91902bb2f59c9920caa6cd"},
+		{"1,2,3", "3efbe78a8d82f29979031a4aa0b16a9d"},
+		{"1,2,4", "63960835bcdc130f0b66d7ff4f6a5a8e"},
+	} {
+		r := Hash(tt.in)
+		if r != tt.out {
+			t.Errorf("Hash(%s) => %s, want %s", tt.in, r, tt.out)
+		}
 	}
 }
 
