@@ -13,15 +13,17 @@ const (
 	sEscape
 )
 
-// first matched transition gets actioned
-var transitions = []struct {
+type transition struct {
 	from    int  // current state
 	next    byte // input byte
 	any     bool // true if any byte is allowed
 	delta   int  // how much this action changes the depth
 	garbage bool // true if this byte counts as garbage
 	to      int  // state to change to
-}{
+}
+
+// first matched transition gets actioned
+var transitions = []transition{
 	// s0 = expecting a group but could get junk
 	{s0, '{', false, 1, false, s0},
 	{s0, '<', false, 0, false, sJunk},
@@ -37,58 +39,58 @@ var transitions = []struct {
 	{sEscape, 0, true, 0, false, sJunk},
 }
 
-type stateMachine struct {
-	state   int
-	depth   int
-	garbage int
-}
-
-func (machine *stateMachine) String() string {
-	return fmt.Sprintf("[state=%d, depth=%d]", machine.state, machine.depth)
-}
-
-func (machine *stateMachine) action(b byte) int {
-	for _, transition := range transitions {
-		if machine.state == transition.from {
-			if transition.any || transition.next == b {
-				machine.depth += transition.delta
-				if transition.garbage {
-					machine.garbage++
-				}
-				machine.state = transition.to
-				return transition.delta
-			}
-		}
-	}
-	panic(fmt.Sprintf("no action for machine=%v, b=%q", machine, b))
-}
-
 // Result contains statistics after processing
 type Result struct {
 	Score        int
 	GarbageCount int
 }
 
+type stateMachine struct {
+	state  int
+	depth  int
+	result Result
+}
+
+func (machine *stateMachine) String() string {
+	return fmt.Sprintf("[state=%d, depth=%d, result=%v]", machine.state, machine.depth, machine.result)
+}
+
+func (machine *stateMachine) applyTransition(t transition) {
+	machine.state = t.to
+	machine.depth += t.delta
+	if t.delta > 0 {
+		machine.result.Score += machine.depth
+	}
+	if t.garbage {
+		machine.result.GarbageCount++
+	}
+}
+
+func (machine *stateMachine) action(b byte) {
+	for _, t := range transitions {
+		if machine.state == t.from {
+			if t.any || t.next == b {
+				machine.applyTransition(t)
+				return
+			}
+		}
+	}
+	panic(fmt.Sprintf("no action for machine=%v, b=%q", machine, b))
+}
+
 // Process parses the input stream and returns a struct containing stats
 func Process(input io.Reader) (Result, error) {
 	buf := make([]byte, 1)
 	machine := &stateMachine{}
-	result := Result{}
 	for {
 		n, err := input.Read(buf)
 		if n > 0 && !unicode.IsSpace(rune(buf[0])) {
-			delta := machine.action(buf[0])
-			if delta > 0 {
-				// if depth is increasing, we've entered a new group.  its score
-				// is the current depth
-				result.Score += machine.depth
-			}
+			machine.action(buf[0])
 		}
 		if err == io.EOF {
-			result.GarbageCount = machine.garbage
-			return result, nil
+			return machine.result, nil
 		} else if err != nil {
-			return result, err
+			return machine.result, err
 		}
 	}
 }
