@@ -1,7 +1,7 @@
 #! /bin/sh
 
 go test -v ./... && go build || exit 1
-for d in $(seq 1 9); do
+for d in $(seq 1 10); do
     if [ -f input/day$d.in ]; then
         input=$(cat input/day$d.in)
     else

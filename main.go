@@ -6,8 +6,10 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/timocp/adventofcode/day1"
+	"github.com/timocp/adventofcode/day10"
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
@@ -59,6 +61,8 @@ func main() {
 		fmt.Println(day9.MustProcess(mustOpen(os.Args[2])).Score)
 	case "9b":
 		fmt.Println(day9.MustProcess(mustOpen(os.Args[2])).GarbageCount)
+	case "10a":
+		fmt.Println(day10.Hash(256, splitInts(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
@@ -134,4 +138,13 @@ func toInt(arg string) int {
 		log.Fatal(err)
 	}
 	return i
+}
+
+func splitInts(arg string) []int {
+	words := strings.Split(arg, ",")
+	ints := make([]int, len(words))
+	for i, w := range words {
+		ints[i] = toInt(w)
+	}
+	return ints
 }
