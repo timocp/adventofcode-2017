@@ -1,6 +1,6 @@
 #! /bin/sh
 
-go test && go build || exit 1
+go test ./... && go build || exit 1
 for d in $(jot 9); do
     if [ -f input/day$d.in ]; then
         input=$(cat input/day$d.in)

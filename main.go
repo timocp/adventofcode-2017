@@ -49,7 +49,9 @@ func main() {
 		reg := day8.NewRegisters()
 		fmt.Println(mustReadProgram(os.Args[2]).Execute(&reg))
 	case "9a":
-		fmt.Println(day9.Score(mustOpen(os.Args[2])))
+		fmt.Println(day9.MustProcess(mustOpen(os.Args[2])).Score)
+	case "9b":
+		fmt.Println(day9.MustProcess(mustOpen(os.Args[2])).GarbageCount)
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
