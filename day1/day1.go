@@ -1,4 +1,4 @@
-package main
+package day1
 
 // InverseCaptcha calcualtes the day1 capcha from an input string
 // mode = 0 - each char is compared to the following char

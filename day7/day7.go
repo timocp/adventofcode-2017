@@ -1,10 +1,11 @@
-package main
+package day7
 
 import (
 	"bufio"
 	"fmt"
 	"io"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -27,9 +28,13 @@ func ParseNode(input string) (*Node, error) {
 		return nil, fmt.Errorf("ParseNode: Invalid format: %s", input)
 	}
 	matches := nodeRe.FindStringSubmatch(input)
+	weight, err := strconv.Atoi(matches[2])
+	if err != nil {
+		return nil, err
+	}
 	return &Node{
 		Name:      matches[1],
-		Weight:    toInt(matches[2]),
+		Weight:    weight,
 		Balancing: splitWords(matches[3]),
 	}, nil
 }

@@ -7,6 +7,13 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/timocp/adventofcode/day1"
+	"github.com/timocp/adventofcode/day2"
+	"github.com/timocp/adventofcode/day3"
+	"github.com/timocp/adventofcode/day4"
+	"github.com/timocp/adventofcode/day5"
+	"github.com/timocp/adventofcode/day6"
+	"github.com/timocp/adventofcode/day7"
 	"github.com/timocp/adventofcode/day8"
 	"github.com/timocp/adventofcode/day9"
 )
@@ -14,17 +21,17 @@ import (
 func main() {
 	switch os.Args[1] {
 	case "1a":
-		fmt.Println(InverseCaptcha(os.Args[2], 0))
+		fmt.Println(day1.InverseCaptcha(os.Args[2], 0))
 	case "1b":
-		fmt.Println(InverseCaptcha(os.Args[2], 1))
+		fmt.Println(day1.InverseCaptcha(os.Args[2], 1))
 	case "2a":
-		fmt.Println(CorruptionChecksum(loadSS(os.Args[2])))
+		fmt.Println(day2.CorruptionChecksum(loadSS(os.Args[2])))
 	case "2b":
-		fmt.Println(EvenlyDivisibleChecksum(loadSS(os.Args[2])))
+		fmt.Println(day2.EvenlyDivisibleChecksum(loadSS(os.Args[2])))
 	case "3a":
-		fmt.Println(SpiralMemoryDistance(toInt(os.Args[2])))
+		fmt.Println(day3.SpiralMemoryDistance(toInt(os.Args[2])))
 	case "3b":
-		fmt.Println(SpiralMemoryStressTest(toInt(os.Args[2])))
+		fmt.Println(day3.SpiralMemoryStressTest(toInt(os.Args[2])))
 	case "4a":
 		fmt.Println(mustCountValidPassphrases(mustOpen(os.Args[2]), false))
 	case "4b":
@@ -67,24 +74,24 @@ func mustOpen(fn string) *os.File {
 	return f
 }
 
-func mustReadTrampoline(fn string) *Trampoline {
-	tramp, err := NewReadTrampoline(mustOpen(fn))
+func mustReadTrampoline(fn string) *day5.Trampoline {
+	tramp, err := day5.NewReadTrampoline(mustOpen(fn))
 	if err != nil {
 		log.Fatal(err)
 	}
 	return tramp
 }
 
-func mustReadMemoryBank(fn string) *MemoryBank {
-	mem, err := NewMemoryBankRead(mustOpen(fn))
+func mustReadMemoryBank(fn string) *day6.MemoryBank {
+	mem, err := day6.NewMemoryBankRead(mustOpen(fn))
 	if err != nil {
 		log.Fatal(err)
 	}
 	return mem
 }
 
-func mustReadTower(fn string) *Node {
-	tower, err := ReadTower(mustOpen(fn))
+func mustReadTower(fn string) *day7.Node {
+	tower, err := day7.ReadTower(mustOpen(fn))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +99,7 @@ func mustReadTower(fn string) *Node {
 }
 
 func mustCountValidPassphrases(input io.Reader, secure bool) int {
-	count, err := CountValidPasshrases(input, secure)
+	count, err := day4.CountValidPasshrases(input, secure)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,7 +121,7 @@ func loadSS(fn string) [][]int {
 		log.Fatal(err)
 	}
 	defer f.Close()
-	ss, err := ReadSpreadsheet(f)
+	ss, err := day2.ReadSpreadsheet(f)
 	if err != nil {
 		log.Fatal(err)
 	}
