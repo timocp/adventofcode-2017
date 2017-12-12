@@ -97,13 +97,11 @@ func (p ProgramList) CountConnected(prognum int) int {
 func (p ProgramList) CountGroups() int {
 	seen := make(map[int]bool)
 	groups := 0
-	for len(seen) < len(p) {
-		// first unseen number?
-		for i := 0; i < len(p); i++ {
-			if !seen[i] {
-				groups++
-				p.iterate(i, seen, func(prognum int) {})
-			}
+	// find unseen numbers
+	for i := 0; i < len(p); i++ {
+		if !seen[i] {
+			groups++
+			p.iterate(i, seen, func(prognum int) {})
 		}
 	}
 	return groups
