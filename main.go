@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/timocp/adventofcode/day8"
+	"github.com/timocp/adventofcode/day9"
 )
 
 func main() {
@@ -47,6 +48,8 @@ func main() {
 	case "8b":
 		reg := day8.NewRegisters()
 		fmt.Println(mustReadProgram(os.Args[2]).Execute(&reg))
+	case "9a":
+		fmt.Println(day9.Score(mustOpen(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
