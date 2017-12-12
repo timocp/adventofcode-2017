@@ -19,3 +19,10 @@ func TestCountConnected(t *testing.T) {
 		t.Errorf("CountConnected => %d, want %d", r, 6)
 	}
 }
+
+func TestCountGroups(t *testing.T) {
+	r := MustReadProgramList(bytes.NewBufferString(testProgram)).CountGroups()
+	if r != 2 {
+		t.Errorf("CountGroups => %d, want %d", r, 2)
+	}
+}

@@ -68,6 +68,8 @@ func main() {
 		fmt.Println(day10.Hash(os.Args[2]))
 	case "12a":
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountConnected(0))
+	case "12b":
+		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountGroups())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}

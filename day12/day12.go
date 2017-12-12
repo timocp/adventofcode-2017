@@ -91,3 +91,20 @@ func (p ProgramList) CountConnected(prognum int) int {
 	})
 	return count
 }
+
+// CountGroups counts the number of groups of programs which can't communicate
+// with each other
+func (p ProgramList) CountGroups() int {
+	seen := make(map[int]bool)
+	groups := 0
+	for len(seen) < len(p) {
+		// first unseen number?
+		for i := 0; i < len(p); i++ {
+			if !seen[i] {
+				groups++
+				p.iterate(i, seen, func(prognum int) {})
+			}
+		}
+	}
+	return groups
+}
