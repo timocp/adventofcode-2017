@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/timocp/adventofcode/day1"
 	"github.com/timocp/adventofcode/day10"
+	"github.com/timocp/adventofcode/day11"
 	"github.com/timocp/adventofcode/day12"
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day3"
@@ -66,6 +68,8 @@ func main() {
 		fmt.Println(day10.Knot(256, splitInts(os.Args[2])))
 	case "10b":
 		fmt.Println(day10.Hash(os.Args[2]))
+	case "11a":
+		fmt.Println(day11.ShortestDistance(mustReadFile(os.Args[2])))
 	case "12a":
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountConnected(0))
 	case "12b":
@@ -83,6 +87,14 @@ func mustOpen(fn string) *os.File {
 		log.Fatal(err)
 	}
 	return f
+}
+
+func mustReadFile(fn string) string {
+	bytes, err := ioutil.ReadFile(fn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(bytes)
 }
 
 func mustReadTrampoline(fn string) *day5.Trampoline {
