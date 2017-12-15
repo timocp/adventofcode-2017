@@ -232,16 +232,31 @@ func (p pos) eq(other pos) bool {
 	return p.x == other.x && p.y == other.y
 }
 
-// ShortstDistance returns the distance to the  origin after following comma
-// separate list of moves in path.
+type result struct {
+	p       pos
+	maxDist int
+}
+
+// ShortestDistance returns the distance to the origin after walking path
 func ShortestDistance(path string) int {
-	p := pos{0, 0}
+	return walk(path).p.x
+}
+
+// MaxDistance returns the furthest away from the origin after walking path
+func MaxDistance(path string) int {
+	return walk(path).maxDist
+}
+
+func walk(path string) (r result) {
 	for _, s := range strings.Split(path, ",") {
 		if dir, ok := dirs[strings.TrimSpace(s)]; ok {
-			p = p.move(dir)
+			r.p = r.p.move(dir)
+			if r.p.x > r.maxDist {
+				r.maxDist = r.p.x
+			}
 		} else {
 			fmt.Fprintf(os.Stderr, "Invalid direction: %s\n", s)
 		}
 	}
-	return p.x
+	return
 }
