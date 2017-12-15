@@ -13,6 +13,7 @@ import (
 	"github.com/timocp/adventofcode/day10"
 	"github.com/timocp/adventofcode/day11"
 	"github.com/timocp/adventofcode/day12"
+	"github.com/timocp/adventofcode/day15"
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
@@ -76,6 +77,8 @@ func main() {
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountConnected(0))
 	case "12b":
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountGroups())
+	case "15a":
+		fmt.Println(day15.Judge(516, 190, 40000000))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
