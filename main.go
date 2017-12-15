@@ -80,6 +80,8 @@ func main() {
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountGroups())
 	case "14a":
 		fmt.Println(day14.SquaresUsed("jxqlasbh"))
+	case "14b":
+		fmt.Println(day14.RegionsPresent("jxqlasbh"))
 	case "15a":
 		fmt.Println(day15.Judge(516, 190, 40000000, false))
 	case "15b":
