@@ -78,7 +78,9 @@ func main() {
 	case "12b":
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountGroups())
 	case "15a":
-		fmt.Println(day15.Judge(516, 190, 40000000))
+		fmt.Println(day15.Judge(516, 190, 40000000, false))
+	case "15b":
+		fmt.Println(day15.Judge(516, 190, 5000000, true))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
