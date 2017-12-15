@@ -3,20 +3,20 @@ package day10
 import "testing"
 
 func TestAct(t *testing.T) {
-	c := &circle{[]int{0, 1, 2, 3, 4}, 0, 0}
+	c := &circle{[]byte{0, 1, 2, 3, 4}, 0, 0}
 	for i, tt := range []struct {
 		length   int
-		list     []int
+		list     []byte
 		position int
 		skipSize int
 	}{
-		{3, []int{2, 1, 0, 3, 4}, 3, 1},
-		{4, []int{4, 3, 0, 1, 2}, 3, 2},
-		{1, []int{4, 3, 0, 1, 2}, 1, 3},
-		{5, []int{3, 4, 2, 1, 0}, 4, 4},
+		{3, []byte{2, 1, 0, 3, 4}, 3, 1},
+		{4, []byte{4, 3, 0, 1, 2}, 3, 2},
+		{1, []byte{4, 3, 0, 1, 2}, 1, 3},
+		{5, []byte{3, 4, 2, 1, 0}, 4, 4},
 	} {
 		c.act(tt.length)
-		if !eqInts(c.list, tt.list) {
+		if !eqBytes(c.list, tt.list) {
 			t.Errorf("%dth act() => %v, want %v", i, c.list, tt.list)
 		}
 		if c.position != tt.position {
@@ -52,7 +52,7 @@ func TestHash(t *testing.T) {
 	}
 }
 
-func eqInts(a []int, b []int) bool {
+func eqBytes(a []byte, b []byte) bool {
 	if len(a) != len(b) {
 		return false
 	}
