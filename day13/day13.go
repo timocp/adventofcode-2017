@@ -18,6 +18,7 @@ type layer struct {
 type Firewall struct {
 	layers   []*layer
 	Severity int
+	caught   bool
 }
 
 func (f *Firewall) String() string {
@@ -102,15 +103,66 @@ func MustReadFirewall(input io.Reader) *Firewall {
 	return f
 }
 
-func (f *Firewall) Run() *Firewall {
+func (f *Firewall) simulate(stopIfCaught bool) {
 	for pos, layer := range f.layers {
 		// is there a scanner at the top of this layer?
 		if layer != nil && layer.pos == 0 {
 			// caught
 			f.Severity += pos * layer.max
+			f.caught = true
+			if stopIfCaught {
+				return
+			}
 		}
 		// move scanners
 		f.tick()
 	}
+}
+
+// copy 2 firewalls.  assumes they have the same size of layers (ie, one has
+// to have originally been a dup() of the other)
+func copyFirewallState(dst, src *Firewall) {
+	for i, srcLayer := range src.layers {
+		if srcLayer != nil {
+			*dst.layers[i] = *srcLayer
+		}
+	}
+	dst.Severity = src.Severity
+	dst.caught = src.caught
+}
+
+func (f *Firewall) dup() *Firewall {
+	f2 := &Firewall{}
+	f2.layers = make([]*layer, len(f.layers))
+	for i := 0; i < len(f.layers); i++ {
+		if f.layers[i] != nil {
+			f2.layers[i] = &layer{}
+		}
+	}
+	copyFirewallState(f2, f)
+	return f2
+}
+
+func (f *Firewall) Run() *Firewall {
+	f.simulate(false)
 	return f
+}
+
+// SneakyWaitTime calculates the number of picoseconds we'd need to wait
+// before sending a packet which won't get caught
+func (f *Firewall) SneakyWaitTime() int {
+	// array of 2 firewalls for swapping base
+	fw := make([]*Firewall, 2)
+	fw[0] = f.dup() // state after (wait) picoseconds
+	fw[1] = f.dup() // scratch space to try simulations
+	for wait := 0; ; wait++ {
+		// try running after `wait` picoseconds
+		fw[1].simulate(true)
+		if !fw[1].caught {
+			return wait
+		}
+		// next loop, try waiting an extra picosecond
+		fw[0].tick()
+		copyFirewallState(fw[1], fw[0])
+	}
 }

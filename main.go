@@ -81,6 +81,8 @@ func main() {
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountGroups())
 	case "13a":
 		fmt.Println(day13.MustReadFirewall(mustOpen(os.Args[2])).Run().Severity)
+	case "13b":
+		fmt.Println(day13.MustReadFirewall(mustOpen(os.Args[2])).SneakyWaitTime())
 	case "14a":
 		fmt.Println(day14.SquaresUsed("jxqlasbh"))
 	case "14b":
