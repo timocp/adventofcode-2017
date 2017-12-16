@@ -13,6 +13,7 @@ import (
 	"github.com/timocp/adventofcode/day10"
 	"github.com/timocp/adventofcode/day11"
 	"github.com/timocp/adventofcode/day12"
+	"github.com/timocp/adventofcode/day13"
 	"github.com/timocp/adventofcode/day14"
 	"github.com/timocp/adventofcode/day15"
 	"github.com/timocp/adventofcode/day2"
@@ -78,6 +79,8 @@ func main() {
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountConnected(0))
 	case "12b":
 		fmt.Println(day12.MustReadProgramList(mustOpen(os.Args[2])).CountGroups())
+	case "13a":
+		fmt.Println(day13.MustReadFirewall(mustOpen(os.Args[2])).Run().Severity)
 	case "14a":
 		fmt.Println(day14.SquaresUsed("jxqlasbh"))
 	case "14b":
