@@ -28,6 +28,9 @@ import (
 )
 
 func main() {
+	if len(os.Args) != 3 {
+		log.Fatal("Usage: adventofcode <puzzle> <inputfile>")
+	}
 	switch os.Args[1] {
 	case "1a":
 		fmt.Println(day1.InverseCaptcha(os.Args[2], 0))
@@ -94,6 +97,8 @@ func main() {
 		fmt.Println(day15.Judge(516, 190, 5000000, true))
 	case "16a":
 		fmt.Println(day16.Dance("abcdefghijklmnop", mustReadFile(os.Args[2])))
+	case "16b":
+		fmt.Println(day16.LongDance("abcdefghijklmnop", mustReadFile(os.Args[2]), 1000000000))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}

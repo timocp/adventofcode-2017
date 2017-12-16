@@ -34,3 +34,23 @@ func TestDance(t *testing.T) {
 		}
 	}
 }
+
+func TestLongDance(t *testing.T) {
+	for _, tt := range []struct {
+		in      string
+		moves   string
+		repeats int
+		out     string
+	}{
+		{"abcde", "s1,x3/4,pe/b\n", 1, "baedc"},
+		{"abcde", "s1,x3/4,pe/b\n", 2, "ceadb"},
+		{"abcde", "s1,x3/4,pe/b\n", 19, "ecbda"},
+		{"abcde", "s1,x3/4,pe/b\n", 20, "abcde"},
+		{"abcde", "s1,x3/4,pe/b\n", 21, "baedc"},
+	} {
+		r := LongDance(tt.in, tt.moves, tt.repeats)
+		if r != tt.out {
+			t.Errorf("LongDance(repeats: %d) => %s, want %s", tt.repeats, r, tt.out)
+		}
+	}
+}

@@ -37,9 +37,55 @@ func toInt(s string) int {
 	return i
 }
 
-func Dance(in, moves string) string {
-	for _, m := range strings.Split(moves, ",") {
-		in = move(in, strings.TrimSpace(m))
+func Dance(in, movesList string) string {
+	return doDance(in, splitMoves(movesList))
+}
+
+func doDance(in string, moves []string) string {
+	for _, m := range moves {
+		in = move(in, m)
 	}
 	return in
+}
+
+// REALLY perform the dance `repeats` times.  Used to generate test data,
+// far too slow to solve the real problem
+/*
+func LongDance(in, movesList string, repeats int) string {
+	moves := splitMoves(movesList)
+	for i := 0; i < repeats; i++ {
+		in = doDance(in, moves)
+		fmt.Printf("after %d dances, state=%s\n", i+1, in)
+	}
+	return in
+}
+*/
+
+func LongDance(in, movesList string, repeats int) string {
+	// dance until we see a repeated position
+	seen := make(map[string]int)
+	moves := splitMoves(movesList)
+	count := 0
+	for count < repeats {
+		if _, ok := seen[in]; ok {
+			for k, v := range seen {
+				if v == repeats%count {
+					return k
+				}
+			}
+		}
+		seen[in] = count
+		in = doDance(in, moves)
+		count++
+	}
+	// no repeats were found before reaching final pos
+	return in
+}
+
+func splitMoves(movesList string) []string {
+	moves := strings.Split(movesList, ",")
+	for i := range moves {
+		moves[i] = strings.TrimSpace(moves[i])
+	}
+	return moves
 }
