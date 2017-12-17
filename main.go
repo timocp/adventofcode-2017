@@ -17,6 +17,7 @@ import (
 	"github.com/timocp/adventofcode/day14"
 	"github.com/timocp/adventofcode/day15"
 	"github.com/timocp/adventofcode/day16"
+	"github.com/timocp/adventofcode/day17"
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
@@ -99,6 +100,10 @@ func main() {
 		fmt.Println(day16.Dance("abcdefghijklmnop", mustReadFile(os.Args[2])))
 	case "16b":
 		fmt.Println(day16.LongDance("abcdefghijklmnop", mustReadFile(os.Args[2]), 1000000000))
+	case "17a":
+		sl := day17.NewSpinLock(toInt(os.Args[2]))
+		sl.Spins(2017)
+		fmt.Println(sl.AtRel(1))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
