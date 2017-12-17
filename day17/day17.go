@@ -1,32 +1,38 @@
 package day17
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
+
+type item struct {
+	value int
+	next  *item
+}
 
 type SpinLock struct {
-	buffer []int
-	curpos int
-	step   int
-	next   int
+	head    *item
+	current *item
+	step    int
+	next    int
 }
 
 func (s *SpinLock) String() string {
 	str := ""
-	for i, v := range s.buffer {
-		if i == s.curpos {
-			str += fmt.Sprintf("(%d)", v)
+	for it := s.head; it != nil; it = it.next {
+		if it == s.current {
+			str += fmt.Sprintf("(%d)", it.value)
 		} else {
-			str += fmt.Sprintf(" %d ", v)
+			str += fmt.Sprintf(" %d ", it.value)
 		}
 	}
-	return str
+	return strings.TrimSpace(str)
 }
 
 func (s *SpinLock) spin() {
-	//fmt.Printf("spin(): s=%v\n", s)
-	s.curpos = (s.curpos+s.step)%(len(s.buffer)) + 1
-	s.buffer = append(s.buffer, 0)
-	copy(s.buffer[s.curpos:], s.buffer[s.curpos-1:])
-	s.buffer[s.curpos] = s.next
+	ptr := s.walk(s.current, s.step)
+	s.current = &item{s.next, ptr.next}
+	ptr.next = s.current
 	s.next++
 }
 
@@ -36,10 +42,27 @@ func (s *SpinLock) Spins(times int) {
 	}
 }
 
+// returns item after walking from ptr n times
+func (s *SpinLock) walk(ptr *item, n int) *item {
+	for i := 0; i < n; i++ {
+		if ptr.next == nil {
+			ptr = s.head
+		} else {
+			ptr = ptr.next
+		}
+	}
+	return ptr
+}
+
+func (s *SpinLock) At(pos int) int {
+	return s.walk(s.head, pos).value
+}
+
 func (s *SpinLock) AtRel(rel int) int {
-	return s.buffer[(s.curpos+rel)%len(s.buffer)]
+	return s.walk(s.current, rel).value
 }
 
 func NewSpinLock(step int) *SpinLock {
-	return &SpinLock{[]int{0}, 0, step, 1}
+	first := &item{0, nil}
+	return &SpinLock{first, first, step, 1}
 }
