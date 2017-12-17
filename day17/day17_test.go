@@ -29,3 +29,21 @@ func TestSpins(t *testing.T) {
 		t.Errorf("2017th spin(), item at curpos+1 = %d, want %d", s.AtRel(1), 638)
 	}
 }
+
+func TestStopValue(t *testing.T) {
+	for _, tt := range []struct {
+		input      int
+		iterations int
+		output     int
+	}{
+		{3, 1, 1},
+		{3, 9, 9},
+		{3, 50000000, 1222153},
+		{355, 50000000, 21066990},
+	} {
+		r := NewSpinLock(tt.input).StopValue(tt.iterations)
+		if r != tt.output {
+			t.Errorf("SpinLock(%d).StopValue(%d) => %d, want %d", tt.input, tt.iterations, r, tt.output)
+		}
+	}
+}

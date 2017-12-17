@@ -66,3 +66,17 @@ func NewSpinLock(step int) *SpinLock {
 	first := &item{0, nil}
 	return &SpinLock{first, first, step, 1}
 }
+
+// StopValue returns the value after a zero (always 2nd pos) after n spins.
+// This is the same as s.Spins(n); s.At(1) without actually performing the skips
+func (s *SpinLock) StopValue(n int) int {
+	value := 0
+	curpos := 0
+	for i := 1; i <= n; i++ {
+		curpos = ((curpos + s.step) % i) + 1
+		if curpos == 1 {
+			value = i
+		}
+	}
+	return value
+}
