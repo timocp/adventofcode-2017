@@ -105,6 +105,8 @@ func main() {
 		sl.Spins(2017)
 		fmt.Println(sl.AtRel(1))
 	case "17b":
+		fmt.Println("Very slow (use 17B to really calculate)")
+	case "17B":
 		sl := day17.NewSpinLock(toInt(os.Args[2]))
 		sl.Spins(50000000)
 		fmt.Println(sl.At(1))
