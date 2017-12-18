@@ -18,6 +18,7 @@ import (
 	"github.com/timocp/adventofcode/day15"
 	"github.com/timocp/adventofcode/day16"
 	"github.com/timocp/adventofcode/day17"
+	"github.com/timocp/adventofcode/day18"
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
@@ -106,6 +107,8 @@ func main() {
 		fmt.Println(sl.AtRel(1))
 	case "17b":
 		fmt.Println(day17.NewSpinLock(toInt(os.Args[2])).StopValue(50000000))
+	case "18a":
+		fmt.Println(day18.Part1(mustOpen(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
