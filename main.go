@@ -109,6 +109,8 @@ func main() {
 		fmt.Println(day17.NewSpinLock(toInt(os.Args[2])).StopValue(50000000))
 	case "18a":
 		fmt.Println(day18.Part1(mustOpen(os.Args[2])))
+	case "18b":
+		fmt.Println(day18.Part2(mustReadFile(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}

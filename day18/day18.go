@@ -2,11 +2,12 @@ package day18
 
 import (
 	"bufio"
-	"fmt"
+	"bytes"
 	"io"
 	"log"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type instruction struct {
@@ -20,6 +21,12 @@ type duet struct {
 	code      []instruction
 	p         int
 	lastSound int
+	fixed     bool // true if this is a "fixed" program from part 2
+	inPipe    chan int
+	outPipe   chan int
+	sent      int
+	waiting   bool
+	mutex     sync.Mutex
 }
 
 func newDuet() *duet {
@@ -62,14 +69,23 @@ func (d *duet) load(input io.Reader) error {
 	return s.Err()
 }
 
+// true if program is runnable (pointer is in bounds)
+func (d *duet) runable() bool {
+	return d.p >= 0 && d.p < len(d.code)
+}
+
 // exec runs the next instruction. updates program pointer
 // callback frcv is called if a sound is recovered
 func (d *duet) exec(frcv func(int)) {
 	inst := d.code[d.p]
-	fmt.Printf("inst(%d)=%v\treg=%v\n", d.p, inst, d.register)
 	switch inst.op {
 	case "snd":
-		d.lastSound = d.get(inst.a1)
+		if d.fixed {
+			d.outPipe <- d.get(inst.a1)
+			d.sent++
+		} else {
+			d.lastSound = d.get(inst.a1)
+		}
 	case "set":
 		d.set(inst.a1, d.get(inst.a2))
 	case "add":
@@ -79,7 +95,16 @@ func (d *duet) exec(frcv func(int)) {
 	case "mod":
 		d.set(inst.a1, d.get(inst.a1)%d.get(inst.a2))
 	case "rcv":
-		if d.get(inst.a1) != 0 {
+		if d.fixed {
+			select {
+			case tmp := <-d.inPipe:
+				d.set(inst.a1, tmp)
+				d.waiting = false
+			default:
+				d.waiting = true
+				d.p--
+			}
+		} else if d.get(inst.a1) != 0 {
 			frcv(d.lastSound)
 		}
 	case "jgz":
@@ -100,11 +125,49 @@ func Part1(input io.Reader) int {
 	run := true
 	lastSound := 0
 
-	for run {
+	for run && d.runable() {
 		d.exec(func(sound int) {
 			lastSound = sound
 			run = false
 		})
 	}
 	return lastSound
+}
+
+// makes a new duet and fills in the parts used by part 2
+func newFixedDuet(nbr int, input string) *duet {
+	p := newDuet()
+	p.load(bytes.NewBufferString(input))
+	p.fixed = true
+	p.outPipe = make(chan int, 100)
+	p.set("p", nbr)
+	return p
+}
+
+func (d *duet) isWaiting() bool {
+	d.mutex.Lock()
+	defer d.mutex.Unlock()
+	return d.waiting
+}
+
+func runDuet(p, other *duet, done chan bool) {
+	for p.runable() {
+		p.exec(func(int) {})
+		if p.waiting && other.isWaiting() {
+			break
+		}
+	}
+	done <- true
+}
+
+func Part2(input string) int {
+	p0, p1 := newFixedDuet(0, input), newFixedDuet(1, input)
+	p0.inPipe = p1.outPipe
+	p1.inPipe = p0.outPipe
+	done := make(chan bool, 2)
+	go runDuet(p0, p1, done)
+	go runDuet(p1, p0, done)
+	<-done
+	<-done
+	return p1.sent
 }

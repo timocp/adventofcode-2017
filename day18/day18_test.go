@@ -30,3 +30,19 @@ func TestPart1(t *testing.T) {
 		t.Errorf("Part1() => %d, want %d", r, 4)
 	}
 }
+
+var in2 = `snd 1
+snd 2
+snd p
+rcv a
+rcv b
+rcv c
+rcv d
+`
+
+func TestPart2(t *testing.T) {
+	r := Part2(in2)
+	if r != 3 {
+		t.Errorf("Part2() => %d, want %d", r, 3)
+	}
+}
