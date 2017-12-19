@@ -19,6 +19,7 @@ import (
 	"github.com/timocp/adventofcode/day16"
 	"github.com/timocp/adventofcode/day17"
 	"github.com/timocp/adventofcode/day18"
+	"github.com/timocp/adventofcode/day19"
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
@@ -111,6 +112,9 @@ func main() {
 		fmt.Println(day18.Part1(mustOpen(os.Args[2])))
 	case "18b":
 		fmt.Println(day18.Part2(mustReadFile(os.Args[2])))
+	case "19a":
+		t := day19.NewTubes(mustReadFile(os.Args[2]))
+		fmt.Println(t.Walk())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
