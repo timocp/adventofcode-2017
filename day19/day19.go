@@ -19,12 +19,13 @@ type Tubes struct {
 	diagram  []string
 	row, col int
 	dir      int
-	letters  string
+	Letters  string
+	Steps    int
 	stopped  bool
 }
 
 func (t *Tubes) String() string {
-	s := fmt.Sprintf("-- dir=%d letters=%s -----\n", t.dir, t.letters)
+	s := fmt.Sprintf("-- dir=%d letters=%s -----\n", t.dir, t.Letters)
 	for i, line := range t.diagram {
 		if i == t.row {
 			s += line[:t.col]
@@ -43,6 +44,7 @@ func NewTubes(s string) *Tubes {
 	t.diagram = strings.Split(s, "\n")
 	t.col = strings.Index(t.diagram[0], "|")
 	t.dir = south
+	t.Steps = 1
 	return t
 }
 
@@ -83,15 +85,15 @@ func (t *Tubes) step() {
 	}
 	t.row += rowOffset[t.dir]
 	t.col += colOffset[t.dir]
+	t.Steps++
 	this := t.at(t.row, t.col)
 	if this >= 'A' && this <= 'Z' {
-		t.letters += string(this)
+		t.Letters += string(this)
 	}
 }
 
-func (t *Tubes) Walk() string {
+func (t *Tubes) Walk() {
 	for !t.stopped {
 		t.step()
 	}
-	return t.letters
 }

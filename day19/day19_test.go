@@ -15,9 +15,11 @@ func TestWalk(t *testing.T) {
 	if tu.col != 5 {
 		t.Errorf("NewTubes().col => %d, want %d", tu.col, 5)
 	}
-	r := tu.Walk()
-	exp := "ABCDEF"
-	if r != exp {
-		t.Errorf("WalkLetters() => %s, want %s", r, exp)
+	tu.Walk()
+	if tu.Letters != "ABCDEF" {
+		t.Errorf("Walk() Letters => %s, want ABCDEF", tu.Letters)
+	}
+	if tu.Steps != 38 {
+		t.Errorf("Walk() Letters => %d, want 38", tu.Steps)
 	}
 }

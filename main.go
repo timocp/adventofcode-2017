@@ -114,7 +114,12 @@ func main() {
 		fmt.Println(day18.Part2(mustReadFile(os.Args[2])))
 	case "19a":
 		t := day19.NewTubes(mustReadFile(os.Args[2]))
-		fmt.Println(t.Walk())
+		t.Walk()
+		fmt.Println(t.Letters)
+	case "19b":
+		t := day19.NewTubes(mustReadFile(os.Args[2]))
+		t.Walk()
+		fmt.Println(t.Steps)
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
