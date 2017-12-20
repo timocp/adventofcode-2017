@@ -21,6 +21,7 @@ import (
 	"github.com/timocp/adventofcode/day18"
 	"github.com/timocp/adventofcode/day19"
 	"github.com/timocp/adventofcode/day2"
+	"github.com/timocp/adventofcode/day20"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
 	"github.com/timocp/adventofcode/day5"
@@ -120,6 +121,10 @@ func main() {
 		t := day19.NewTubes(mustReadFile(os.Args[2]))
 		t.Walk()
 		fmt.Println(t.Steps)
+	case "20a":
+		s, err := day20.NewSwarm(mustReadFile(os.Args[2]))
+		mustNot(err)
+		fmt.Println(s.Closest())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
@@ -127,81 +132,67 @@ func main() {
 
 // helper functions mostly to log and exit on errors
 
-func mustOpen(fn string) *os.File {
-	f, err := os.Open(fn)
+func mustNot(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func mustOpen(fn string) *os.File {
+	f, err := os.Open(fn)
+	mustNot(err)
 	return f
 }
 
 func mustReadFile(fn string) string {
 	bytes, err := ioutil.ReadFile(fn)
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return string(bytes)
 }
 
 func mustReadTrampoline(fn string) *day5.Trampoline {
 	tramp, err := day5.NewReadTrampoline(mustOpen(fn))
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return tramp
 }
 
 func mustReadMemoryBank(fn string) *day6.MemoryBank {
 	mem, err := day6.NewMemoryBankRead(mustOpen(fn))
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return mem
 }
 
 func mustReadTower(fn string) *day7.Node {
 	tower, err := day7.ReadTower(mustOpen(fn))
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return tower
 }
 
 func mustCountValidPassphrases(input io.Reader, secure bool) int {
 	count, err := day4.CountValidPasshrases(input, secure)
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return count
 }
 
 func mustReadProgram(fn string) day8.Program {
 	p, err := day8.ReadProgram(mustOpen(fn))
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return p
 }
 
 // loadSS reads a 2d int array from a filename, calling log.Fatal on error
 func loadSS(fn string) [][]int {
 	f, err := os.Open(fn)
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	defer f.Close()
 	ss, err := day2.ReadSpreadsheet(f)
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return ss
 }
 
 func toInt(arg string) int {
 	i, err := strconv.Atoi(arg)
-	if err != nil {
-		log.Fatal(err)
-	}
+	mustNot(err)
 	return i
 }
 
