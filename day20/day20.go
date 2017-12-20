@@ -2,6 +2,7 @@ package day20
 
 import (
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,6 +14,7 @@ type vector struct {
 
 type particle struct {
 	pos, vel, acc vector
+	present       bool
 }
 
 func (p *particle) distOrigin() int {
@@ -20,43 +22,73 @@ func (p *particle) distOrigin() int {
 }
 
 type Swarm struct {
-	p []*particle
+	p          []*particle
+	collisions bool
 }
 
-func NewSwarm(in string) (*Swarm, error) {
-	s := &Swarm{[]*particle{}}
+func NewSwarm(in string, collisions bool) (*Swarm, error) {
+	s := &Swarm{[]*particle{}, collisions}
 	err := s.load(in)
 	return s, err
 }
 
-func (s *Swarm) Closest() int {
-	// not sure yet how to detect unchanging "long term" winner. let's just
-	// run for a sufficiently long time :)
-	for i := 0; i < 1000; i++ {
-		s.tick()
-	}
+func (s *Swarm) Closest() (minP int) {
 	// who is closest to origin?
-	minDist := s.p[0].distOrigin()
-	minP := 0
-	for i := 1; i < len(s.p); i++ {
-		dist := s.p[i].distOrigin()
-		if dist < minDist {
-			minDist = dist
-			minP = i
+	minDist := math.MaxInt64
+	for i := 0; i < len(s.p); i++ {
+		if s.p[i].present {
+			dist := s.p[i].distOrigin()
+			if dist < minDist {
+				minDist = dist
+				minP = i
+			}
 		}
 	}
-	return minP
+	return
+}
+
+// Run for n iterations
+func (s *Swarm) Run(n int) {
+	for i := 0; i < n; i++ {
+		s.tick()
+	}
+}
+
+func (s *Swarm) CountPresent() int {
+	count := 0
+	for _, p := range s.p {
+		if p.present {
+			count++
+		}
+	}
+	return count
 }
 
 // adjust all velocities and positions
 func (s *Swarm) tick() {
-	for _, p := range s.p {
-		p.vel.x += p.acc.x
-		p.vel.y += p.acc.y
-		p.vel.z += p.acc.z
-		p.pos.x += p.vel.x
-		p.pos.y += p.vel.y
-		p.pos.z += p.vel.z
+	positions := map[vector][]int{}
+	for i, p := range s.p {
+		if p.present {
+			p.vel.x += p.acc.x
+			p.vel.y += p.acc.y
+			p.vel.z += p.acc.z
+			p.pos.x += p.vel.x
+			p.pos.y += p.vel.y
+			p.pos.z += p.vel.z
+			if s.collisions {
+				positions[p.pos] = append(positions[p.pos], i)
+			}
+		}
+	}
+	if s.collisions {
+		// every hash value with more than 1 entry is a set of colliding particles
+		for _, v := range positions {
+			if len(v) > 1 {
+				for _, i := range v {
+					s.p[i].present = false
+				}
+			}
+		}
 	}
 }
 
@@ -83,7 +115,7 @@ func (s *Swarm) load(in string) error {
 			vector{toInt(matches[1]), toInt(matches[2]), toInt(matches[3])},
 			vector{toInt(matches[4]), toInt(matches[5]), toInt(matches[6])},
 			vector{toInt(matches[7]), toInt(matches[8]), toInt(matches[9])},
-		}
+			true}
 		s.p = append(s.p, &p)
 	}
 	return err

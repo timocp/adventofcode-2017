@@ -122,9 +122,15 @@ func main() {
 		t.Walk()
 		fmt.Println(t.Steps)
 	case "20a":
-		s, err := day20.NewSwarm(mustReadFile(os.Args[2]))
+		s, err := day20.NewSwarm(mustReadFile(os.Args[2]), false)
 		mustNot(err)
+		s.Run(500)
 		fmt.Println(s.Closest())
+	case "20b":
+		s, err := day20.NewSwarm(mustReadFile(os.Args[2]), true)
+		mustNot(err)
+		s.Run(500)
+		fmt.Println(s.CountPresent())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
