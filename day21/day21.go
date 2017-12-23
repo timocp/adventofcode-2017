@@ -252,10 +252,10 @@ func startingGrid() *grid {
 	return parseGrid(".#./..#/###")
 }
 
-func Part1(input io.Reader) int {
+func IterateAndCountPixels(input io.Reader, n int) int {
 	rules := loadRules(input)
 	g := startingGrid()
-	for i := 0; i < 5; i++ {
+	for i := 0; i < n; i++ {
 		g = g.iterate(rules)
 	}
 	return g.pixels()

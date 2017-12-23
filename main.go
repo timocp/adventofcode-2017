@@ -134,7 +134,9 @@ func main() {
 		s.Run(500)
 		fmt.Println(s.CountPresent())
 	case "21a":
-		fmt.Println(day21.Part1(mustOpen(os.Args[2])))
+		fmt.Println(day21.IterateAndCountPixels(mustOpen(os.Args[2]), 5))
+	case "21b":
+		fmt.Println(day21.IterateAndCountPixels(mustOpen(os.Args[2]), 18))
 	case "23a":
 		fmt.Println(day23.Part1(mustOpen(os.Args[2])))
 	case "23b":
