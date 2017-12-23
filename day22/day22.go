@@ -5,8 +5,15 @@ import (
 	"io"
 )
 
+const (
+	clean = iota
+	weakened
+	infected
+	flagged
+)
+
 type grid struct {
-	infected   map[[2]int]bool // key is [row, col]
+	state      map[[2]int]int // key is [row, col]
 	bursts     int
 	infections int
 	curpos     [2]int
@@ -16,7 +23,7 @@ type grid struct {
 // input is assumed to be an odd width square grid, with center at (0,0)
 func loadGrid(input io.Reader) *grid {
 	g := &grid{}
-	g.infected = make(map[[2]int]bool)
+	g.state = make(map[[2]int]int)
 	s := bufio.NewScanner(input)
 	offset := 0
 	for row := 0; s.Scan(); row++ {
@@ -26,7 +33,7 @@ func loadGrid(input io.Reader) *grid {
 		}
 		for col, b := range line {
 			if b == '#' {
-				g.infected[[2]int{row - offset, col - offset}] = true
+				g.state[[2]int{row - offset, col - offset}] = infected
 			}
 		}
 	}
@@ -36,17 +43,7 @@ func loadGrid(input io.Reader) *grid {
 	return g
 }
 
-func (g *grid) burst() {
-	g.bursts++
-	if g.infected[g.curpos] {
-		g.direction = (g.direction + 1) % 4
-	} else {
-		g.direction = (g.direction + 3) % 4
-	}
-	g.infected[g.curpos] = !g.infected[g.curpos]
-	if g.infected[g.curpos] {
-		g.infections++
-	}
+func (g *grid) move() {
 	switch g.direction {
 	case 0:
 		g.curpos[0]--
@@ -59,10 +56,43 @@ func (g *grid) burst() {
 	}
 }
 
-func Part1(input io.Reader) int {
+func (g *grid) burst() {
+	g.bursts++
+	if g.state[g.curpos] == infected {
+		g.direction = (g.direction + 1) % 4
+		g.state[g.curpos] = clean
+	} else {
+		g.direction = (g.direction + 3) % 4
+		g.state[g.curpos] = infected
+		g.infections++
+	}
+	g.move()
+}
+
+func (g *grid) evolvedBurst() {
+	g.bursts++
+	switch g.state[g.curpos] {
+	case clean:
+		g.direction = (g.direction + 3) % 4
+	case weakened:
+		g.infections++
+	case infected:
+		g.direction = (g.direction + 1) % 4
+	case flagged:
+		g.direction = (g.direction + 2) % 4
+	}
+	g.state[g.curpos] = (g.state[g.curpos] + 1) % 4
+	g.move()
+}
+
+func Run(input io.Reader, n int, evolved bool) int {
 	g := loadGrid(input)
-	for g.bursts < 10000 {
-		g.burst()
+	for g.bursts < n {
+		if evolved {
+			g.evolvedBurst()
+		} else {
+			g.burst()
+		}
 	}
 	return g.infections
 }
