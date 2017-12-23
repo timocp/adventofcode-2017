@@ -134,6 +134,8 @@ func main() {
 		fmt.Println(s.CountPresent())
 	case "23a":
 		fmt.Println(day23.Part1(mustOpen(os.Args[2])))
+	case "23b":
+		fmt.Println(day23.Part2())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
