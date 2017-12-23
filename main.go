@@ -23,6 +23,7 @@ import (
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day20"
 	"github.com/timocp/adventofcode/day21"
+	"github.com/timocp/adventofcode/day22"
 	"github.com/timocp/adventofcode/day23"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
@@ -137,6 +138,8 @@ func main() {
 		fmt.Println(day21.IterateAndCountPixels(mustOpen(os.Args[2]), 5))
 	case "21b":
 		fmt.Println(day21.IterateAndCountPixels(mustOpen(os.Args[2]), 18))
+	case "22a":
+		fmt.Println(day22.Part1(mustOpen(os.Args[2])))
 	case "23a":
 		fmt.Println(day23.Part1(mustOpen(os.Args[2])))
 	case "23b":
