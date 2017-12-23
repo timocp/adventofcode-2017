@@ -16,8 +16,9 @@ type instruction struct {
 	a2 string // second arg (register or value)
 }
 
-type duet struct {
+type Duet struct {
 	register  map[string]int
+	opCount   map[string]int
 	code      []instruction
 	p         int
 	lastSound int
@@ -29,13 +30,14 @@ type duet struct {
 	mutex     sync.Mutex
 }
 
-func newDuet() *duet {
-	d := new(duet)
+func NewDuet() *Duet {
+	d := new(Duet)
 	d.register = make(map[string]int)
+	d.opCount = make(map[string]int)
 	return d
 }
 
-func (d *duet) addInstruction(s string) error {
+func (d *Duet) addInstruction(s string) error {
 	words := strings.Split(s, " ")
 	inst := instruction{words[0], words[1], ""}
 	if len(words) == 3 {
@@ -45,12 +47,12 @@ func (d *duet) addInstruction(s string) error {
 	return nil
 }
 
-func (d *duet) set(a string, i int) {
+func (d *Duet) set(a string, i int) {
 	d.register[a] = i
 }
 
 // get value; a can be a register name or a number
-func (d *duet) get(a string) int {
+func (d *Duet) get(a string) int {
 	if a[0] >= 'a' && a[0] <= 'z' {
 		return d.register[a]
 	}
@@ -61,7 +63,7 @@ func (d *duet) get(a string) int {
 	return i
 }
 
-func (d *duet) load(input io.Reader) error {
+func (d *Duet) Load(input io.Reader) error {
 	s := bufio.NewScanner(input)
 	for s.Scan() {
 		d.addInstruction(s.Text())
@@ -70,13 +72,13 @@ func (d *duet) load(input io.Reader) error {
 }
 
 // true if program is runnable (pointer is in bounds)
-func (d *duet) runable() bool {
+func (d *Duet) Runable() bool {
 	return d.p >= 0 && d.p < len(d.code)
 }
 
 // exec runs the next instruction. updates program pointer
 // callback frcv is called if a sound is recovered
-func (d *duet) exec(frcv func(int)) {
+func (d *Duet) Exec(frcv func(int)) {
 	inst := d.code[d.p]
 	switch inst.op {
 	case "snd":
@@ -90,6 +92,8 @@ func (d *duet) exec(frcv func(int)) {
 		d.set(inst.a1, d.get(inst.a2))
 	case "add":
 		d.set(inst.a1, d.get(inst.a1)+d.get(inst.a2))
+	case "sub":
+		d.set(inst.a1, d.get(inst.a1)-d.get(inst.a2))
 	case "mul":
 		d.set(inst.a1, d.get(inst.a1)*d.get(inst.a2))
 	case "mod":
@@ -111,22 +115,27 @@ func (d *duet) exec(frcv func(int)) {
 		if d.get(inst.a1) > 0 {
 			d.p += d.get(inst.a2) - 1
 		}
+	case "jnz":
+		if d.get(inst.a1) != 0 {
+			d.p += d.get(inst.a2) - 1
+		}
 	}
+	d.opCount[inst.op]++
 	d.p++
 }
 
 // Part1 runs until an rcv is executed.
 func Part1(input io.Reader) int {
-	d := newDuet()
-	err := d.load(input)
+	d := NewDuet()
+	err := d.Load(input)
 	if err != nil {
 		log.Fatal(err)
 	}
 	run := true
 	lastSound := 0
 
-	for run && d.runable() {
-		d.exec(func(sound int) {
+	for run && d.Runable() {
+		d.Exec(func(sound int) {
 			lastSound = sound
 			run = false
 		})
@@ -135,24 +144,28 @@ func Part1(input io.Reader) int {
 }
 
 // makes a new duet and fills in the parts used by part 2
-func newFixedDuet(nbr int, input string) *duet {
-	p := newDuet()
-	p.load(bytes.NewBufferString(input))
+func newFixedDuet(nbr int, input string) *Duet {
+	p := NewDuet()
+	p.Load(bytes.NewBufferString(input))
 	p.fixed = true
 	p.outPipe = make(chan int, 100)
 	p.set("p", nbr)
 	return p
 }
 
-func (d *duet) isWaiting() bool {
+func (d *Duet) isWaiting() bool {
 	d.mutex.Lock()
 	defer d.mutex.Unlock()
 	return d.waiting
 }
 
-func runDuet(p, other *duet, done chan bool) {
-	for p.runable() {
-		p.exec(func(int) {})
+func (d *Duet) InvocationCount(op string) int {
+	return d.opCount[op]
+}
+
+func runDuet(p, other *Duet, done chan bool) {
+	for p.Runable() {
+		p.Exec(func(int) {})
 		if p.waiting && other.isWaiting() {
 			break
 		}

@@ -17,8 +17,8 @@ set a 1
 jgz a -2`
 
 func TestLoad(t *testing.T) {
-	d := newDuet()
-	err := d.load(bytes.NewBufferString(in))
+	d := NewDuet()
+	err := d.Load(bytes.NewBufferString(in))
 	if err != nil {
 		t.Errorf("load() error => %v, want nil", err)
 	}

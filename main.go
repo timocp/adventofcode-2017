@@ -22,6 +22,7 @@ import (
 	"github.com/timocp/adventofcode/day19"
 	"github.com/timocp/adventofcode/day2"
 	"github.com/timocp/adventofcode/day20"
+	"github.com/timocp/adventofcode/day23"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
 	"github.com/timocp/adventofcode/day5"
@@ -131,6 +132,8 @@ func main() {
 		mustNot(err)
 		s.Run(500)
 		fmt.Println(s.CountPresent())
+	case "23a":
+		fmt.Println(day23.Part1(mustOpen(os.Args[2])))
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
