@@ -2,7 +2,6 @@ package day21
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 )
 
@@ -11,7 +10,6 @@ var testRules = `../.# => ##./#../...
 
 func TestPixels(t *testing.T) {
 	g := startingGrid()
-	fmt.Printf("g=%v\n", g)
 	r := loadRules(bytes.NewBufferString(testRules))
 	for i, tt := range []struct {
 		pattern string

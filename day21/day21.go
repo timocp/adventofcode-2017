@@ -210,12 +210,6 @@ func (g *grid) iterate(rules []rule) *grid {
 		}
 	}
 
-	/*
-		fmt.Printf("size=%d, chunkSize=%d / chunks=%d / newSize=%d, newChunkSize=%d\n", size, chunkSize, chunks, newSize, newChunkSize)
-		fmt.Printf("before: %v\n", g)
-		fmt.Printf("after:  %v\n", tmp)
-	*/
-
 	// create target grid
 	q := make([][]bool, newSize)
 	for i := 0; i < newSize; i++ {
