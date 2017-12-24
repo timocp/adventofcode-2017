@@ -149,6 +149,8 @@ func main() {
 		fmt.Println(day23.Part2())
 	case "24a":
 		fmt.Println(day24.NewBridge(mustOpen(os.Args[2])).MaxStrength())
+	case "24b":
+		fmt.Println(day24.NewBridge(mustOpen(os.Args[2])).LongestBridgeStrength())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}

@@ -107,6 +107,23 @@ func (b *Bridge) MaxStrength() int {
 	return maxStr
 }
 
+func (b *Bridge) LongestBridgeStrength() int {
+	maxLen := 0
+	maxStr := 0
+	b.each(func(b2 *Bridge) {
+		if len(b2.used) > maxLen {
+			maxLen = len(b2.used)
+			maxStr = b2.strength()
+		} else if len(b2.used) == maxLen {
+			s2 := b2.strength()
+			if s2 > maxStr {
+				maxStr = s2
+			}
+		}
+	})
+	return maxStr
+}
+
 func toInt(s string) int {
 	i, err := strconv.Atoi(s)
 	if err != nil {
