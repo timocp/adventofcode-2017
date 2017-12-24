@@ -25,6 +25,7 @@ import (
 	"github.com/timocp/adventofcode/day21"
 	"github.com/timocp/adventofcode/day22"
 	"github.com/timocp/adventofcode/day23"
+	"github.com/timocp/adventofcode/day24"
 	"github.com/timocp/adventofcode/day3"
 	"github.com/timocp/adventofcode/day4"
 	"github.com/timocp/adventofcode/day5"
@@ -146,6 +147,8 @@ func main() {
 		fmt.Println(day23.Part1(mustOpen(os.Args[2])))
 	case "23b":
 		fmt.Println(day23.Part2())
+	case "24a":
+		fmt.Println(day24.NewBridge(mustOpen(os.Args[2])).MaxStrength())
 	default:
 		fmt.Printf("Puzzle %s unimplemented\n", os.Args[1])
 	}
